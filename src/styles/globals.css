@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #1a5276;
+  --secondary-color: #2e86c1;
+  --accent-color: #f39c12;
+  --text-color: #333;
+  --light-bg: #f8f9fa;
+}
+
+body {
+  color: var(--text-color);
+  background: var(--light-bg);
+  font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+  .container-custom {
+    @apply container mx-auto px-4 md:px-6;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white py-2 px-4 rounded-md hover:bg-secondary transition-colors duration-300;
+  }
+  
+  .section-title {
+    @apply text-3xl font-bold mb-6 text-primary;
+  }
+} 
