@@ -10,10 +10,6 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'export',
   distDir: 'out',
-  i18n: {
-    locales: ['ru', 'uk', 'en'],
-    defaultLocale: 'ru',
-  },
   images: {
     domains: ['localhost'],
     unoptimized: true,

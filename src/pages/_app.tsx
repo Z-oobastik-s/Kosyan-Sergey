@@ -1,13 +1,9 @@
 import React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import Layout from '../components/layout/Layout';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // Check if the current page is the admin page
-  const isAdminPage = Component.displayName === 'AdminPanel';
-  
   return (
     <>
       <Head>
@@ -19,13 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="theme-color" content="#1a5276" />
       </Head>
       
-      {isAdminPage ? (
-        <Component {...pageProps} />
-      ) : (
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      )}
+      <Component {...pageProps} />
     </>
   );
 }

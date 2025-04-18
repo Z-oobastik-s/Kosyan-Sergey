@@ -1,9 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
-import { GetStaticProps } from 'next';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 const HomePage = () => {
   // We'll use hardcoded text for now until translations are properly set up
@@ -53,7 +50,7 @@ const HomePage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           />
-          <div className="absolute inset-0 bg-[url('/images/lake-hero.jpg')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-gray-800 bg-cover bg-center" />
           <div className="container-custom relative z-20 flex flex-col justify-center items-center h-full text-white text-center">
             <motion.h1 
               className="text-4xl md:text-6xl font-bold mb-6"
@@ -84,7 +81,7 @@ const HomePage = () => {
                 className="bg-light-bg rounded-lg shadow-lg overflow-hidden"
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                <div className="h-56 bg-[url('/images/fishing.jpg')] bg-cover bg-center" />
+                <div className="h-56 bg-gray-400 bg-cover bg-center" />
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{t('homepage.services.fishing.title')}</h3>
                   <p className="mb-4">{t('homepage.services.fishing.description')}</p>
@@ -97,7 +94,7 @@ const HomePage = () => {
                 className="bg-light-bg rounded-lg shadow-lg overflow-hidden"
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                <div className="h-56 bg-[url('/images/cabins.jpg')] bg-cover bg-center" />
+                <div className="h-56 bg-gray-400 bg-cover bg-center" />
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{t('homepage.services.accommodation.title')}</h3>
                   <p className="mb-4">{t('homepage.services.accommodation.description')}</p>
@@ -110,7 +107,7 @@ const HomePage = () => {
                 className="bg-light-bg rounded-lg shadow-lg overflow-hidden"
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
               >
-                <div className="h-56 bg-[url('/images/cafe.jpg')] bg-cover bg-center" />
+                <div className="h-56 bg-gray-400 bg-cover bg-center" />
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{t('homepage.services.cafe.title')}</h3>
                   <p className="mb-4">{t('homepage.services.cafe.description')}</p>
@@ -160,7 +157,7 @@ const HomePage = () => {
                 <a href="/about" className="btn-primary inline-block">{t('common.readMore')}</a>
               </div>
               <div className="rounded-lg overflow-hidden shadow-lg">
-                <img src="/images/history.jpg" alt="Historical photo of Михайлына lake" className="w-full h-auto" />
+                <div className="w-full h-64 bg-gray-400"></div>
               </div>
             </div>
           </div>
@@ -170,14 +167,4 @@ const HomePage = () => {
   );
 };
 
-// Temporary disable server-side props for development
-const getStaticProps = async ({ locale }: { locale?: string }) => {
-  return {
-    props: {
-      // ...(await serverSideTranslations(locale || 'ru', ['common'])),
-    },
-  };
-};
-
-export { getStaticProps };
 export default HomePage; 
