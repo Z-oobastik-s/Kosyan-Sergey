@@ -60,9 +60,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     
     - name: Dependency audit
-      run: npm audit --production || true
-    
-    - name: Setup Dependabot
-      uses: dependabot/fetch-metadata@v1
-      with:
-        github-token: ${{ secrets.GH_TOKEN }} 
+      run: npm audit --production || true 
