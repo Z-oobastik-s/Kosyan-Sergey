@@ -33,16 +33,16 @@ jobs:
       run: npm test
     
     - name: Build
-      run: npm run build
+      run: npm run build && npm run export
+      env:
+        NODE_ENV: production
     
-    - name: Deploy
-      if: github.ref == 'refs/heads/main'
-      run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'github-actions@github.com'
-        git add .
-        git commit -m "Auto-build by GitHub Actions" || echo "No changes to commit"
-        git push https://${{ secrets.GH_TOKEN }}@github.com/Z-oobastik-s/Kosyan-Sergey.git HEAD:main
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: out
+        token: ${{ secrets.GH_TOKEN }}
+        branch: gh-pages
 
   security:
     runs-on: ubuntu-latest

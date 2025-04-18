@@ -14,7 +14,11 @@ const nextConfig = {
   },
   images: {
     domains: ['localhost'],
+    unoptimized: true,
   },
+  basePath: process.env.NODE_ENV === 'production' ? '/Kosyan-Sergey' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/Kosyan-Sergey/' : '',
+  trailingSlash: true,
   async headers() {
     return [
       {
