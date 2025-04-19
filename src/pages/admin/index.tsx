@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 interface LoginForm {
-  email: string;
+  username: string;
   password: string;
 }
 
 const AdminPanel: React.FC = () => {
-  const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
+  const [form, setForm] = useState<LoginForm>({ username: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
   const router = useRouter();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({
@@ -23,14 +32,14 @@ const AdminPanel: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Mock authentication - in production this would call a real API
-    if (form.email === 'admin@ozero-mikhailyna.com' && form.password === 'admin123') {
+    // Check credentials
+    if (form.username === 'Zoobastiks' && form.password === '242344') {
       setIsLoggedIn(true);
       setError(null);
-      // In production, store JWT in localStorage or HttpOnly cookies
-      localStorage.setItem('adminToken', 'mock-jwt-token');
+      // Store authentication token
+      localStorage.setItem('adminToken', 'admin-session-token');
     } else {
-      setError('Неверный email или пароль');
+      setError('Неверное имя пользователя или пароль');
     }
   };
 
@@ -39,7 +48,7 @@ const AdminPanel: React.FC = () => {
     localStorage.removeItem('adminToken');
   };
 
-  // Simple admin dashboard UI
+  // Admin dashboard UI
   if (isLoggedIn) {
     return (
       <>
@@ -47,129 +56,249 @@ const AdminPanel: React.FC = () => {
           <title>Административная панель | Озеро Михайлына</title>
         </Head>
         <div className="bg-gray-100 min-h-screen">
-          <header className="bg-white shadow">
-            <div className="container-custom py-4 flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-primary">Административная панель</h1>
+          <header className="bg-primary shadow">
+            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+              <h1 className="text-2xl font-bold text-white">Административная панель</h1>
               <button 
                 onClick={handleLogout}
-                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors"
+                className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors"
               >
                 Выйти
               </button>
             </div>
           </header>
           
-          <main className="container-custom py-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Content Management */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold mb-4">Управление контентом</h2>
-                <ul className="space-y-2">
-                  <li>
-                    <button className="text-primary hover:underline">Редактировать тексты</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Управление новостями</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Загрузка изображений</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Цены и правила</button>
-                  </li>
-                </ul>
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex flex-col md:flex-row">
+              {/* Sidebar */}
+              <div className="w-full md:w-64 mb-6 md:mb-0">
+                <div className="bg-white rounded-lg shadow">
+                  <div className="p-4 border-b">
+                    <h2 className="font-bold text-lg">Меню</h2>
+                  </div>
+                  <nav className="p-2">
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'dashboard' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('dashboard')}
+                    >
+                      Панель управления
+                    </button>
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'prices' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('prices')}
+                    >
+                      Цены
+                    </button>
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'fish' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('fish')}
+                    >
+                      Виды рыб
+                    </button>
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'equipment' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('equipment')}
+                    >
+                      Снаряжение
+                    </button>
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'bookings' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('bookings')}
+                    >
+                      Бронирования
+                    </button>
+                    <button 
+                      className={`w-full text-left p-3 rounded ${activeTab === 'gallery' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                      onClick={() => setActiveTab('gallery')}
+                    >
+                      Галерея
+                    </button>
+                  </nav>
+                </div>
               </div>
               
-              {/* User Management */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold mb-4">Пользователи</h2>
-                <ul className="space-y-2">
-                  <li>
-                    <button className="text-primary hover:underline">Управление пользователями</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Роли и разрешения</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Активные сессии</button>
-                  </li>
-                </ul>
-              </div>
-              
-              {/* Analytics */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-bold mb-4">Аналитика</h2>
-                <ul className="space-y-2">
-                  <li>
-                    <button className="text-primary hover:underline">Статистика посещений</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Популярные страницы</button>
-                  </li>
-                  <li>
-                    <button className="text-primary hover:underline">Отчеты</button>
-                  </li>
-                </ul>
+              {/* Main Content */}
+              <div className="flex-1 md:ml-6">
+                {activeTab === 'dashboard' && (
+                  <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-2xl font-bold mb-6">Панель управления</h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                      <div className="bg-blue-100 p-4 rounded-lg">
+                        <div className="text-blue-600 font-bold text-lg">Бронирований сегодня</div>
+                        <div className="text-3xl font-bold mt-2">5</div>
+                      </div>
+                      <div className="bg-green-100 p-4 rounded-lg">
+                        <div className="text-green-600 font-bold text-lg">Доход за неделю</div>
+                        <div className="text-3xl font-bold mt-2">12,450 грн</div>
+                      </div>
+                      <div className="bg-yellow-100 p-4 rounded-lg">
+                        <div className="text-yellow-600 font-bold text-lg">Онлайн-посетителей</div>
+                        <div className="text-3xl font-bold mt-2">28</div>
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold mb-4">Последние бронирования</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Имя
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Дата
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Услуга
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Статус
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">Иван Петренко</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">18.04.2025</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">Дневная рыбалка</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Оплачено
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">Михаил Сидорчук</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">19.04.2025</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">VIP-рыбалка</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Ожидает оплаты
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">Александр Коваленко</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">20.04.2025</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">Ночная рыбалка</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Оплачено
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+                
+                {activeTab === 'prices' && (
+                  <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-2xl font-bold mb-6">Цены</h2>
+                    
+                    <form className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-bold mb-4">Дневная рыбалка</h3>
+                        <div className="flex items-center mb-2">
+                          <label className="w-32">Стоимость:</label>
+                          <input 
+                            type="number" 
+                            value="600" 
+                            className="rounded border-gray-300 px-3 py-2 w-32"
+                          />
+                          <span className="ml-2">грн/день</span>
+                        </div>
+                        <div className="flex items-center">
+                          <label className="w-32">Описание:</label>
+                          <textarea 
+                            className="rounded border-gray-300 px-3 py-2 w-full"
+                            rows={3}
+                            defaultValue="Рыбалка с 6:00 до 20:00. Включает возможность ловли разнообразной рыбы со своим снаряжением."
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-bold mb-4">Ночная рыбалка</h3>
+                        <div className="flex items-center mb-2">
+                          <label className="w-32">Стоимость:</label>
+                          <input 
+                            type="number" 
+                            value="800" 
+                            className="rounded border-gray-300 px-3 py-2 w-32"
+                          />
+                          <span className="ml-2">грн/ночь</span>
+                        </div>
+                        <div className="flex items-center">
+                          <label className="w-32">Описание:</label>
+                          <textarea 
+                            className="rounded border-gray-300 px-3 py-2 w-full"
+                            rows={3}
+                            defaultValue="Рыбалка с 20:00 до 6:00. Идеально для ловли карпа и сома. Особая атмосфера ночной рыбалки."
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-bold mb-4">VIP-рыбалка</h3>
+                        <div className="flex items-center mb-2">
+                          <label className="w-32">Стоимость:</label>
+                          <input 
+                            type="number" 
+                            value="1200" 
+                            className="rounded border-gray-300 px-3 py-2 w-32"
+                          />
+                          <span className="ml-2">грн/день</span>
+                        </div>
+                        <div className="flex items-center">
+                          <label className="w-32">Описание:</label>
+                          <textarea 
+                            className="rounded border-gray-300 px-3 py-2 w-full"
+                            rows={3}
+                            defaultValue="Лучшие места, личный инструктор, аренда беседки, приготовление улова. Максимальный комфорт!"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="pt-4">
+                        <button className="bg-primary text-white py-2 px-6 rounded hover:bg-secondary transition-colors">
+                          Сохранить изменения
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+                
+                {/* Placeholder for other tabs */}
+                {activeTab !== 'dashboard' && activeTab !== 'prices' && (
+                  <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-2xl font-bold mb-6">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h2>
+                    <p>Эта секция находится в разработке.</p>
+                  </div>
+                )}
               </div>
             </div>
-            
-            {/* Recent Activity */}
-            <div className="mt-8 bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-4">Последние действия</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Действие
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Пользователь
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Дата
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">Обновление цен на рыбалку</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">admin@ozero-mikhailyna.com</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">10.04.2025 14:30</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">Добавление новой новости</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">editor@ozero-mikhailyna.com</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">09.04.2025 11:15</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">Загрузка новых фотографий</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">content@ozero-mikhailyna.com</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">08.04.2025 16:45</div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </main>
+          </div>
         </div>
       </>
     );
@@ -196,18 +325,17 @@ const AdminPanel: React.FC = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
-                <label htmlFor="email-address" className="sr-only">
-                  Email
+                <label htmlFor="username" className="sr-only">
+                  Имя пользователя
                 </label>
                 <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="text"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
-                  placeholder="Email"
-                  value={form.email}
+                  placeholder="Имя пользователя"
+                  value={form.username}
                   onChange={handleChange}
                 />
               </div>
@@ -219,7 +347,6 @@ const AdminPanel: React.FC = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
                   placeholder="Пароль"
