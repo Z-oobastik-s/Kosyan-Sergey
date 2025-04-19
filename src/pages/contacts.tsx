@@ -1,3 +1,4 @@
+// Contacts page for Ozero Mikhailyna - Updated version
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
